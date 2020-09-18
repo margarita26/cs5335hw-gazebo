@@ -55,25 +55,31 @@ void callback(Robot *robot)
 
     for (LaserHit hit : robot->hits)
     {
-
         if (hit.range < 1.57)
         {
             cout << "hit" << endl;
             cout << hit.angle << endl;
 
-            if ((hit.angle < 0.5 && hit.angle > -1.0) || (hit.angle > 0.5 && hit.angle < 2.0))
+            if ((hit.angle < 0.4 && hit.angle > -1.0))
             {
-                cout << "has to turn" << endl;
+                cout << "turning left" << endl;
                 turn = true;
+                robot->set_vel(3.0);
+                robot->set_turn(-1);
+            }
+            if (hit.angle > 0.5 && hit.angle < 1.0)
+            {
+                cout << "turning right" << endl;
+                turn = true;
+                robot->set_vel(3.0);
+                robot->set_turn(1);
             }
         }
     }
 
     if (turn)
     {
-        cout << "turing left" << endl;
-        robot->set_vel(3.0);
-        robot->set_turn(-1);
+        cout << "turned" << endl;
     }
     else
     {
