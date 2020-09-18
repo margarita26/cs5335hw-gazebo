@@ -20,17 +20,7 @@ void setTurn(Robot *robot)
     double turn_angle = target_angle - robot->pos_t;
     double turn = -turn_angle;
 
-    if (turn < -0.5)
-    {
-        robot->set_turn(-0.5);
-        return;
-    }
-    if (turn > 0.5)
-    {
-        robot->set_turn(0.5);
-        return;
-    }
-    robot->set_turn(turn);
+    robot->set_turn(turn < -0.5? -0.5 : (turn > 0.5? 0.5 : turn));
 }
 
 void callback(Robot *robot)
@@ -52,6 +42,8 @@ void callback(Robot *robot)
     }
 
     bool turn = false;
+    double vel = 3.0;
+    double turn_degree = 1.0;
 
     for (LaserHit hit : robot->hits)
     {
@@ -60,28 +52,24 @@ void callback(Robot *robot)
             cout << "hit" << endl;
             cout << hit.angle << endl;
 
-            if ((hit.angle < 0.4 && hit.angle > -1.0))
+            if (hit.angle < 0.4 && hit.angle > -1.0)
             {
                 cout << "turning left" << endl;
                 turn = true;
-                robot->set_vel(3.0);
-                robot->set_turn(-1);
+                robot->set_vel(vel);
+                robot->set_turn(-turn_degree);
             }
             if (hit.angle > 0.5 && hit.angle < 1.0)
             {
                 cout << "turning right" << endl;
                 turn = true;
-                robot->set_vel(3.0);
-                robot->set_turn(1);
+                robot->set_vel(vel);
+                robot->set_turn(turn_degree);
             }
         }
     }
 
-    if (turn)
-    {
-        cout << "turned" << endl;
-    }
-    else
+    if (!turn)
     {
         cout << "going to goal" << endl;
         robot->set_vel(5.0);
